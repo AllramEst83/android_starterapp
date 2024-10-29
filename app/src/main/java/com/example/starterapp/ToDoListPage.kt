@@ -10,18 +10,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -40,6 +38,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.style.TextAlign
+import com.example.starterapp.ViewModels.ToDoViewModel
+import com.example.starterapp.db.ToDo
 
 
 @Composable
@@ -83,7 +83,13 @@ fun ToDoListPage(viewModel: ToDoViewModel){
                         inputText = ""
                     }
                 },
-                modifier = Modifier.padding(5.dp)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFF8A5C2),
+                    contentColor = Color.Black
+                ),
+                modifier = Modifier
+                    .padding(5.dp)
+                    .align(Alignment.CenterVertically)
             )
             {
                 Text("Add")
@@ -118,7 +124,7 @@ fun ToDoItem(item: ToDo, onDelete: () -> Unit) {
             .fillMaxSize()
             .padding(8.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF8A5C2)),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Row(

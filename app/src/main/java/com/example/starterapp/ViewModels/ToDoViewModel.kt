@@ -1,10 +1,10 @@
-package com.example.starterapp
+package com.example.starterapp.ViewModels
 
-import android.R
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.starterapp.MainApplication
+import com.example.starterapp.db.ToDo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.sql.Date
@@ -12,7 +12,7 @@ import java.time.Instant
 
 class ToDoViewModel: ViewModel() {
 
-    val toDoDao = MainApplication.toDoDatabase.getTodoDao()
+    val toDoDao = MainApplication.Companion.toDoDatabase.getTodoDao()
 
     val toDoList: LiveData<List<ToDo>> = toDoDao.getAllToDo()
 

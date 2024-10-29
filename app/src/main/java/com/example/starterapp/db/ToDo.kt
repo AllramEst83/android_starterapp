@@ -1,6 +1,5 @@
-package com.example.starterapp
+package com.example.starterapp.db
 
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.Date
