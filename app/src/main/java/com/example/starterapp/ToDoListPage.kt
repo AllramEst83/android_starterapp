@@ -1,6 +1,5 @@
 package com.example.starterapp
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,20 +14,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,78 +36,69 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.style.TextAlign
 import com.example.starterapp.ViewModels.ToDoViewModel
 import com.example.starterapp.db.ToDo
+import com.example.starterapp.ui.theme.ToDoAppTheme
 
 
 @Composable
 fun ToDoListPage(viewModel: ToDoViewModel){
-
-    val toDoList = viewModel.toDoList.observeAsState()
-    var inputText by remember {
-        mutableStateOf("")
-    }
-    Column (
-        modifier = Modifier
-            .fillMaxHeight()
-            .background(Color(4285839871))
-    ){
-        Row (
+    ToDoAppTheme{
+        val toDoList = viewModel.toDoList.observeAsState()
+        var inputText by remember {
+            mutableStateOf("")
+        }
+        Column (
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        )
-        {
-            OutlinedTextField(
+                .fillMaxHeight()
+        ){
+            Row (
                 modifier = Modifier
-                    .weight(1f)
+                    .fillMaxWidth()
                     .padding(10.dp),
-                value = inputText,
-                onValueChange = {
-                    inputText = it
-                },
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Black,
-                    unfocusedBorderColor = Color.Black,
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.White
-                ),
-            )
-            Button(
-                onClick = {
-                    if(inputText.isNotEmpty()){
-                        viewModel.addToDo(inputText)
-                        inputText = ""
-                    }
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFF8A5C2),
-                    contentColor = Color.Black
-                ),
-                modifier = Modifier
-                    .padding(5.dp)
-                    .align(Alignment.CenterVertically)
+                horizontalArrangement = Arrangement.SpaceEvenly
             )
             {
-                Text("Add")
-            }
-        }
-
-        toDoList.value?.let { list ->
-            if(list.isNotEmpty()){
-                LazyColumn(
-                    modifier = Modifier.padding(10.dp),
-                    content = {
-                        itemsIndexed(list) { index: Int, item: ToDo ->
-                            ToDoItem(item, onDelete = {
-                                viewModel.deleteToDo(item.id)
-                            })
-                        }
+                OutlinedTextField(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(10.dp),
+                    value = inputText,
+                    onValueChange = {
+                        inputText = it
                     },
                 )
-            }else{
-                ShowEmptyMessage()
+                Button(
+                    onClick = {
+                        if(inputText.isNotEmpty()){
+                            viewModel.addToDo(inputText)
+                            inputText = ""
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .align(Alignment.CenterVertically)
+                )
+                {
+                    Text("Add")
+                }
             }
-        } ?: ShowEmptyMessage()
+
+            toDoList.value?.let { list ->
+                if(list.isNotEmpty()){
+                    LazyColumn(
+                        modifier = Modifier.padding(10.dp),
+                        content = {
+                            itemsIndexed(list) { index: Int, item: ToDo ->
+                                ToDoItem(item, onDelete = {
+                                    viewModel.deleteToDo(item.id)
+                                })
+                            }
+                        },
+                    )
+                }else{
+                    ShowEmptyMessage()
+                }
+            } ?: ShowEmptyMessage()
+        }
     }
 }
 
@@ -124,7 +111,6 @@ fun ToDoItem(item: ToDo, onDelete: () -> Unit) {
             .fillMaxSize()
             .padding(8.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF8A5C2)),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Row(
@@ -138,22 +124,19 @@ fun ToDoItem(item: ToDo, onDelete: () -> Unit) {
             ){
                 Text(
                     text = formattedDate,
-                    fontSize = 14.sp,
-                    color = Color.Black
+                    fontSize = 14.sp
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = item.title,
-                    fontSize = 22.sp,
-                    color = Color.Black
+                    fontSize = 22.sp
                 )
             }
             IconButton(onClick = onDelete) {
                 Icon(
                     modifier = Modifier.width(20.dp),
                     painter = painterResource(id = R.drawable.delete_icon),
-                    contentDescription = "delete button",
-                    tint = Color.Black
+                    contentDescription = "delete button"
                 )
 
             }
@@ -167,7 +150,6 @@ fun ShowEmptyMessage(){
         modifier = Modifier.fillMaxWidth(),
         textAlign = TextAlign.Center,
         text = "Oops! no items here.",
-        fontSize = 16.sp,
-        color = Color.Black
+        fontSize = 16.sp
     )
 }

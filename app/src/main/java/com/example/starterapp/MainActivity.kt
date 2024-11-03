@@ -9,27 +9,26 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.core.graphics.toColorInt
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.starterapp.ViewModels.ToDoViewModel
-import com.example.starterapp.ui.theme.StarterAppTheme
+import com.example.starterapp.ui.theme.ToDoAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        window.statusBarColor = 4285839871.toInt()
-        window.navigationBarColor = 4285839871.toInt()
-
         val toDoViewModel = ViewModelProvider(this)[ToDoViewModel::class.java]
         setContent {
-            StarterAppTheme {
+            ToDoAppTheme {
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()
-                        .systemBarsPadding(),
-                    color = MaterialTheme.colorScheme.background
+                        .systemBarsPadding()
                 ) {
                     ToDoListPage(viewModel = toDoViewModel)
                 }
