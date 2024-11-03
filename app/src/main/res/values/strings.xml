@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Starter app</string>
+    <string name="todo_page_name">To-Do List</string>
 </resources>

@@ -59,8 +59,18 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    // ViewModel
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    // Lifecycles only (without ViewModel or LiveData)
+    implementation("androidx.activity:activity-ktx:1.8.1")
+    // Activities
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
+    // Fragments
     val roomversion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomversion")
     annotationProcessor("androidx.room:room-compiler:$roomversion")
     kapt("androidx.room:room-compiler:$roomversion")
+    val navversion = "2.8.3"
+    implementation("androidx.navigation:navigation-compose:$navversion")
 }

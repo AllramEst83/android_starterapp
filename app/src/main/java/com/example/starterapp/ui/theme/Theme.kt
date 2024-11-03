@@ -11,11 +11,14 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.example.starterapp.viewModels.ThemeViewModel
+import com.example.starterapp.viewModels.ThemeViewModel.ThemeMode
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
@@ -248,20 +251,23 @@ private val highContrastDarkColorScheme = darkColorScheme(
 
 @Composable
 fun ToDoAppTheme(
+    themeViewModel: ThemeViewModel,
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false, // Take theme from phone settings
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
+    val themeMode = themeViewModel.themeMode
 
-        darkTheme -> darkScheme
-        else -> lightScheme
+    val colorScheme = when (themeMode) {
+        ThemeMode.LIGHT -> lightScheme
+        ThemeMode.HIGHCONTRASTLIGHT -> highContrastLightColorScheme
+        ThemeMode.DARK -> darkScheme
+        ThemeMode.HIGHCONTRASTDARK -> highContrastDarkColorScheme
+        ThemeMode.SYSTEM_DEFAULT -> if (isSystemInDarkTheme()) darkScheme else lightScheme
+        else -> darkScheme
     }
+
     val view = LocalView.current
     if (!view.isInEditMode) {
         val navigationBarColor = when {

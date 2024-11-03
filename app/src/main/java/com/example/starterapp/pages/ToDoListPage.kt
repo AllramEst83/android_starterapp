@@ -1,6 +1,7 @@
-package com.example.starterapp
+package com.example.starterapp.pages
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,30 +34,77 @@ import java.util.Locale
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import com.example.starterapp.ViewModels.ToDoViewModel
+import com.example.starterapp.R
+import com.example.starterapp.viewModels.ToDoViewModel
 import com.example.starterapp.db.ToDo
 import com.example.starterapp.ui.theme.ToDoAppTheme
-
+import com.example.starterapp.viewModels.ThemeViewModel
 
 @Composable
-fun ToDoListPage(viewModel: ToDoViewModel){
-    ToDoAppTheme{
+fun ToDoListPage(viewModel: ToDoViewModel, themeViewModel : ThemeViewModel, onNavigateToSettings: () -> Unit){
+    ToDoAppTheme(themeViewModel){
         val toDoList = viewModel.toDoList.observeAsState()
         var inputText by remember {
             mutableStateOf("")
         }
-        Column (
-            modifier = Modifier
-                .fillMaxHeight()
-        ){
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 80.dp) // Adjust if needed for input field spacing
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.todo_page_name),
+                        fontSize = 22.sp,
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(start = 15.dp, end = 5.dp)
+                    )
+                    Button(
+                        onClick = onNavigateToSettings,
+                        modifier = Modifier
+                            .padding(start = 5.dp, end = 15.dp)
+                    ) {
+                        Text("Go to Theme Settings")
+                    }
+                }
+                toDoList.value?.let { list ->
+                    if(list.isNotEmpty()){
+                        LazyColumn(
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .weight(1f)
+                        ) {
+                            itemsIndexed(list) { index: Int, item: ToDo ->
+                                ToDoItem(item, onDelete = {
+                                    viewModel.deleteToDo(item.id)
+                                })
+                            }
+                        }
+                    } else {
+                        ShowEmptyMessage()
+                    }
+                } ?: ShowEmptyMessage()
+            }
+
             Row (
                 modifier = Modifier
                     .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
                     .padding(10.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly
-            )
-            {
+            ) {
                 OutlinedTextField(
                     modifier = Modifier
                         .weight(1f)
@@ -76,31 +124,14 @@ fun ToDoListPage(viewModel: ToDoViewModel){
                     modifier = Modifier
                         .padding(5.dp)
                         .align(Alignment.CenterVertically)
-                )
-                {
+                ) {
                     Text("Add")
                 }
             }
-
-            toDoList.value?.let { list ->
-                if(list.isNotEmpty()){
-                    LazyColumn(
-                        modifier = Modifier.padding(10.dp),
-                        content = {
-                            itemsIndexed(list) { index: Int, item: ToDo ->
-                                ToDoItem(item, onDelete = {
-                                    viewModel.deleteToDo(item.id)
-                                })
-                            }
-                        },
-                    )
-                }else{
-                    ShowEmptyMessage()
-                }
-            } ?: ShowEmptyMessage()
         }
     }
 }
+
 
 @Composable
 fun ToDoItem(item: ToDo, onDelete: () -> Unit) {
