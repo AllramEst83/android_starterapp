@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -55,7 +54,7 @@ fun ToDoListPage(viewModel: ToDoViewModel, themeViewModel : ThemeViewModel, onNa
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 80.dp) // Adjust if needed for input field spacing
+                    .padding(bottom = 80.dp)
             ) {
                 Row(
                     modifier = Modifier

@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Starter app</string>
     <string name="todo_page_name">To-Do List</string>
+    <string name="system_default">System Default</string>
+    <string name="light_theme">Light Theme</string>
+    <string name="high_contrast_light_theme">High Contrast Light Theme</string>
+    <string name="dark_theme">Dark Theme</string>
+    <string name="high_contrast_dark_theme">High Contrast Dark Theme</string>
 </resources>
