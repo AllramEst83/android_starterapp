@@ -7,9 +7,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 
 class ThemeViewModel : ViewModel() {
-    enum class ThemeMode { LIGHT, HIGHCONTRASTLIGHT, DARK, HIGHCONTRASTDARK, SYSTEM_DEFAULT }
+    enum class ThemeMode { RED_LIGHT,RED_DARK,GREEN_LIGHT, GREEN_DARK,SYSTEM_DEFAULT_LIGHT,SYSTEM_DEFAULT_DARK }
 
-    var themeMode by mutableStateOf(ThemeMode.SYSTEM_DEFAULT)
+    var themeMode by mutableStateOf(ThemeMode.SYSTEM_DEFAULT_LIGHT)
         private set
 
     fun setTheme(themeMode: ThemeMode) {
