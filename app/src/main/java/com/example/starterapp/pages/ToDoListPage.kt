@@ -36,8 +36,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.example.starterapp.R
+import com.example.starterapp.db.todo.ToDo
 import com.example.starterapp.viewModels.ToDoViewModel
-import com.example.starterapp.db.ToDo
 import com.example.starterapp.ui.theme.ToDoAppTheme
 import com.example.starterapp.viewModels.ThemeViewModel
 

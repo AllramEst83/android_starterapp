@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.starterapp.MainApplication
-import com.example.starterapp.db.ToDo
+import com.example.starterapp.db.todo.ToDo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.sql.Date
@@ -28,3 +28,4 @@ class ToDoViewModel: ViewModel() {
         }
     }
 }
+

@@ -2,7 +2,7 @@ package com.example.starterapp
 
 import android.app.Application
 import androidx.room.Room
-import com.example.starterapp.db.ToDoDatabase
+import com.example.starterapp.db.todo.ToDoDatabase
 
 class MainApplication : Application() {
     companion object{

@@ -1,4 +1,4 @@
-package com.example.starterapp.db
+package com.example.starterapp.db.todo
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao

@@ -75,4 +75,5 @@ dependencies {
 
     val navversion = "2.8.3"
     implementation("androidx.navigation:navigation-compose:$navversion")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 }
