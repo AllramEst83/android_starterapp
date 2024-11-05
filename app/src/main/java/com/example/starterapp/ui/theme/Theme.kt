@@ -11,6 +11,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.example.starterapp.utils.adjustedForStatusBar
+import com.example.starterapp.utils.contrastColor
 import com.example.starterapp.viewModels.ThemeViewModel
 import com.example.starterapp.viewModels.ThemeViewModel.ThemeMode
 
@@ -42,7 +44,7 @@ fun ToDoAppTheme(
         }
 
         val statusBarColor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            colorScheme.onBackground.toArgb()
+            colorScheme.background.adjustedForStatusBar(0.4f).toArgb()
         } else {
             Color(0x50000000).toArgb() // Semi-transparent black
         }

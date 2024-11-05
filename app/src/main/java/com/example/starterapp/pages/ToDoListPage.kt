@@ -1,17 +1,20 @@
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -19,12 +22,17 @@ import androidx.compose.ui.unit.sp
 import com.example.starterapp.R
 import com.example.starterapp.db.todo.ToDo
 import com.example.starterapp.ui.theme.ToDoAppTheme
+import com.example.starterapp.utils.blendWithWhite
 import com.example.starterapp.utils.contrastColor
 import com.example.starterapp.viewModels.ThemeViewModel
 import com.example.starterapp.viewModels.ToDoViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
+import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.Save
+import androidx.compose.ui.draw.rotate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,9 +73,9 @@ fun ToDoListPage(
                             }
                         )
                         // Divider under TopAppBar spanning the entire width
-                        HorizontalDivider(
-                            color = Color.Gray,
-                            thickness = 1.dp)
+                        //HorizontalDivider(
+                          //  color = Color.Gray,
+                            //thickness = 1.dp)
                     }
                 }
             ) { paddingValues ->
@@ -89,9 +97,15 @@ fun DrawerContent(onNavigateToSettings: () -> Unit) {
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
-                        MaterialTheme.colorScheme.primary,
-                        MaterialTheme.colorScheme.secondary,
-                        MaterialTheme.colorScheme.tertiary)
+                        MaterialTheme.colorScheme.primary.blendWithWhite(0.3f, 0.1f),
+                        MaterialTheme.colorScheme.primary.blendWithWhite(0.3f, 0.1f),
+                        MaterialTheme.colorScheme.secondary.blendWithWhite(0.3f, 0.1f),
+                        MaterialTheme.colorScheme.secondary.blendWithWhite(0.3f, 0.1f),
+                        MaterialTheme.colorScheme.tertiary.blendWithWhite(0.3f, 0.1f),
+                        MaterialTheme.colorScheme.tertiary.blendWithWhite(0.3f, 0.1f)
+                    ),
+                    startY = 0f,
+                    endY = Float.POSITIVE_INFINITY
                 )
             )
             .padding(16.dp)
@@ -123,7 +137,6 @@ fun DrawerContent(onNavigateToSettings: () -> Unit) {
     }
 }
 
-
 @Composable
 fun Content(viewModel: ToDoViewModel) {
     val toDoList by viewModel.toDoList.observeAsState(emptyList())
@@ -139,7 +152,6 @@ fun Content(viewModel: ToDoViewModel) {
                 .padding(1.dp),
             verticalArrangement = Arrangement.SpaceBetween // Add this line
         ) {
-            // Content above the input
             Box(
                 modifier = Modifier
                     .weight(1f, fill = true) // Add weight to push the input Row to the bottom
@@ -151,10 +163,15 @@ fun Content(viewModel: ToDoViewModel) {
                             .fillMaxSize()
                             .padding(1.dp)
                     ) {
-                        itemsIndexed(toDoList) { index, item ->
-                            ToDoItem(item, onDelete = {
+                        itemsIndexed(toDoList) { _, item ->
+                            ToDoItem(item,
+                                onDelete = {
                                 viewModel.deleteToDo(item.id)
-                            })
+                            },
+                                onUpdate = { updatedItem ->
+                                    viewModel.updateToDo(updatedItem)
+                                }
+                            )
                         }
                     }
                 } else {
@@ -196,69 +213,122 @@ fun Content(viewModel: ToDoViewModel) {
 }
 
 @Composable
-fun AddButton(onClick: () -> Unit) {
-    Surface(
-        modifier = Modifier
-            .height(TextFieldDefaults.MinHeight)
-            .padding(4.dp)
-            .clip(RoundedCornerShape(15.dp))
-            .clickable(onClick = onClick),
-        color = MaterialTheme.colorScheme.primary,
-        contentColor = MaterialTheme.colorScheme.onPrimary
-    ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            Text(
-                text = "Add",
-                style = MaterialTheme.typography.bodyLarge
-            )
-        }
-    }
-}
-
-
-@Composable
-fun ToDoItem(item: ToDo, onDelete: () -> Unit) {
+fun ToDoItem(item: ToDo, onDelete: () -> Unit, onUpdate: (ToDo) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    var isEditing by remember { mutableStateOf(false) }
+    var editableContent by remember { mutableStateOf(item.content ?: "") }
     val formattedDate = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH).format(item.createdAt)
+
+    val rotation by animateFloatAsState(
+        targetValue = if (expanded) 180f else 0f,
+        label = "ExpandCollapseRotation"
+    )
 
     Card(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(8.dp),
+            .fillMaxWidth()
+            .padding(8.dp)
+            .animateContentSize(),
         shape = RoundedCornerShape(15.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
-        Row(
+        Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxWidth()
+                .padding(16.dp)
         ) {
-            Column(
-                modifier = Modifier.weight(1f)
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = formattedDate,
-                    fontSize = 14.sp
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = item.title,
-                    fontSize = 22.sp
-                )
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = formattedDate,
+                        fontSize = 14.sp
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = item.title,
+                        fontSize = 22.sp
+                    )
+                }
+                IconButton(onClick = { expanded = !expanded }) {
+                    Icon(
+                        imageVector = Icons.Filled.ExpandLess,
+                        contentDescription = if (expanded) "Collapse" else "Expand",
+                        modifier = Modifier.rotate(rotation) // Apply rotation
+                    )
+                }
             }
-            IconButton(onClick = onDelete) {
-                Icon(
-                    modifier = Modifier.width(20.dp),
-                    painter = painterResource(id = R.drawable.delete_icon),
-                    contentDescription = "delete button"
-                )
+            // Use AnimatedVisibility for smooth expand/collapse animations
+            AnimatedVisibility(visible = expanded) {
+                Column {
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    if (isEditing) {
+                        // Editable content with a TextField
+                        TextField(
+                            value = editableContent,
+                            onValueChange = { editableContent = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            placeholder = { Text("Edit content") }
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    } else {
+                        // Display content as text
+                        HorizontalDivider(
+                            modifier = Modifier.fillMaxWidth(),
+                            color = MaterialTheme.colorScheme.onSurface,
+                            thickness = 1.dp
+                        )
+                        Text(
+                            modifier = Modifier.padding(top = 10.dp),
+                            text = item.content ?: "",
+                            fontSize = 16.sp
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        // Delete icon on the bottom left
+                        IconButton(onClick = onDelete) {
+                            Icon(
+                                modifier = Modifier.size(20.dp),
+                                painter = painterResource(id = R.drawable.delete_icon),
+                                contentDescription = "Delete"
+                            )
+                        }
+
+                        // Edit or Save icon on the bottom right
+                        IconButton(onClick = {
+                            if (isEditing) {
+                                // Save changes
+                                val updatedItem = item.copy(content = editableContent)
+                                onUpdate(updatedItem)
+                                isEditing = false // Exit editing mode
+                            } else {
+                                // Enter editing mode
+                                isEditing = true
+                            }
+                        }) {
+                            Icon(
+                                imageVector = if (isEditing) Icons.Default.Save else Icons.Default.Edit,
+                                contentDescription = if (isEditing) "Save" else "Edit"
+                            )
+                        }
+                    }
+                }
             }
         }
     }
 }
+
 
 @Composable
 fun ShowEmptyMessage() {
