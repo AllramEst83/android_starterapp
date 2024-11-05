@@ -35,16 +35,23 @@ fun ToDoAppTheme(
 
     val view = LocalView.current
     if (!view.isInEditMode) {
-        val navigationBarColor = when {
-            Build.VERSION.SDK_INT >= 29 -> colorScheme.background.toArgb()
-            Build.VERSION.SDK_INT >= 26 -> colorScheme.background.toArgb()
-            else -> Color(0x00, 0x00, 0x00, 0x50).toArgb()
+        val navigationBarColor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            colorScheme.background.toArgb()
+        } else {
+            Color(0x50000000).toArgb() // Semi-transparent black
+        }
+
+        val statusBarColor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            colorScheme.onBackground.toArgb()
+        } else {
+            Color(0x50000000).toArgb() // Semi-transparent black
         }
 
         SideEffect {
-            setUpEdgeToEdge(view, darkTheme, navigationBarColor)
+            setUpEdgeToEdge(view, darkTheme, navigationBarColor, statusBarColor)
         }
     }
+
 
     MaterialTheme(
         colorScheme = colorScheme,
@@ -54,11 +61,11 @@ fun ToDoAppTheme(
 }
 
 
-private fun setUpEdgeToEdge(view: View, darkTheme: Boolean,navigationBarColor: Int) {
+private fun setUpEdgeToEdge(view: View, darkTheme: Boolean,navigationBarColor: Int, statusBarColor: Int) {
     val window = (view.context as Activity).window
     WindowCompat.setDecorFitsSystemWindows(window, false)
     window.navigationBarColor = navigationBarColor
-    window.statusBarColor = navigationBarColor
+    window.statusBarColor = statusBarColor
     val controller = WindowCompat.getInsetsController(window, view)
     controller.isAppearanceLightStatusBars = !darkTheme
     controller.isAppearanceLightNavigationBars = !darkTheme
