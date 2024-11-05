@@ -1,6 +1,5 @@
 package com.example.starterapp
 
-import ToDoListPage
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -15,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.starterapp.pages.ThemeSettingsScreen
+import com.example.starterapp.pages.ToDoListPage
 import com.example.starterapp.ui.theme.ToDoAppTheme
 import com.example.starterapp.viewModels.ThemeViewModel
 import com.example.starterapp.viewModels.ToDoViewModel

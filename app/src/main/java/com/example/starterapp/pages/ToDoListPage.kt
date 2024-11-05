@@ -1,13 +1,17 @@
+package com.example.starterapp.pages
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -29,7 +33,6 @@ import com.example.starterapp.viewModels.ToDoViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
-import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.ui.draw.rotate
@@ -46,12 +49,16 @@ fun ToDoListPage(
         val scope = rememberCoroutineScope()
 
         ModalNavigationDrawer(
+            gesturesEnabled = false,
             drawerState = drawerState,
             drawerContent = {
                 DrawerContent(
                     onNavigateToSettings = {
                         scope.launch { drawerState.close() }
                         onNavigateToSettings()
+                    },
+                    onCloseDrawer = {
+                        scope.launch { drawerState.close() }
                     }
                 )
             }
@@ -89,7 +96,7 @@ fun ToDoListPage(
 }
 
 @Composable
-fun DrawerContent(onNavigateToSettings: () -> Unit) {
+fun DrawerContent(onNavigateToSettings: () -> Unit, onCloseDrawer: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxHeight()
@@ -113,17 +120,27 @@ fun DrawerContent(onNavigateToSettings: () -> Unit) {
         Column(
             verticalArrangement = Arrangement.Top
         ) {
-            Text(
-                text = "Menu",
-                color = MaterialTheme.colorScheme.primary.contrastColor(),
-                fontSize = 20.sp,
-                modifier = Modifier
-                    .padding(bottom = 16.dp)
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Menu",
+                    color = MaterialTheme.colorScheme.primary.contrastColor(),
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                IconButton(onClick = onCloseDrawer) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Close Drawer",
+                        tint = MaterialTheme.colorScheme.primary.contrastColor()
+                    )
+                }
+            }
             HorizontalDivider() // Divider in the drawer content
-            Spacer(modifier = Modifier.
-            height(8.dp)
-            )
+            Spacer(modifier = Modifier.height(8.dp))
 
             // Navigation item for Theme Settings
             NavigationDrawerItem(
@@ -133,9 +150,9 @@ fun DrawerContent(onNavigateToSettings: () -> Unit) {
             )
             // Add more navigation items here if needed
         }
-
     }
 }
+
 
 @Composable
 fun Content(viewModel: ToDoViewModel) {
@@ -217,6 +234,7 @@ fun ToDoItem(item: ToDo, onDelete: () -> Unit, onUpdate: (ToDo) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     var isEditing by remember { mutableStateOf(false) }
     var editableContent by remember { mutableStateOf(item.content ?: "") }
+    var editableTitle by remember { mutableStateOf(item.title ?: "") }
     val formattedDate = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH).format(item.createdAt)
 
     val rotation by animateFloatAsState(
@@ -232,102 +250,140 @@ fun ToDoItem(item: ToDo, onDelete: () -> Unit, onUpdate: (ToDo) -> Unit) {
         shape = RoundedCornerShape(15.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
             ) {
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = formattedDate,
-                        fontSize = 14.sp
+                Text(
+                    modifier = Modifier
+                        .background(
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+                            shape = CircleShape)
+                        .padding(start = 8.dp, end = 8.dp, top = 2.dp, bottom = 2.dp),
+
+                    text = formattedDate,
+                    fontSize = 14.sp
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+
+                if (isEditing) {
+                    TextField(
+                        value = editableTitle,
+                        onValueChange = { editableTitle = it },
+                        modifier = Modifier.fillMaxWidth(), // Ensuring TextField takes full width
+                        placeholder = { Text("Edit title") }
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
+                } else {
                     Text(
                         text = item.title,
-                        fontSize = 22.sp
+                        fontSize = 22.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 4.dp)// Ensuring text takes full width
                     )
                 }
-                IconButton(onClick = { expanded = !expanded }) {
+
+                AnimatedVisibility(visible = expanded) {
+                    Column {
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        if (isEditing) {
+                            // Editable content with a TextField
+                            TextField(
+                                value = editableContent,
+                                onValueChange = { editableContent = it },
+                                modifier = Modifier.fillMaxWidth(),
+                                placeholder = { Text("Edit content") }
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                        } else {
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 10.dp),
+                                text = item.content ?: "",
+                                fontSize = 16.sp
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            IconButton(
+                                onClick = onDelete,
+                                modifier = Modifier
+                                    .background(
+                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f), // Slightly darker background
+                                        shape = CircleShape
+                                    )
+                                    .padding(2.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "Delete"
+                                )
+                            }
+                            IconButton(
+                                onClick = {
+                                    if (isEditing) {
+                                        val updatedItem = item.copy(title = editableTitle, content = editableContent)
+                                        onUpdate(updatedItem)
+                                        isEditing = false
+                                    } else {
+                                        isEditing = true
+                                    }
+                                },
+                                modifier = Modifier
+                                    .background(
+                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f), // Slightly darker background
+                                        shape = CircleShape
+                                    )
+                                    .padding(2.dp)
+                            ) {
+                                Icon(
+                                    imageVector = if (isEditing) Icons.Default.Save else Icons.Default.Edit,
+                                    contentDescription = if (isEditing) "Save" else "Edit"
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Chevron icon in the top right corner
+            IconButton(
+                onClick = { if (!isEditing) expanded = !expanded },
+                enabled = !isEditing,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f), // Slightly darker background
+                            shape = CircleShape // Rounded background around the icon
+                        )
+                        .padding(4.dp) // Padding to create space around the icon within the rounded background
+                ) {
                     Icon(
                         imageVector = Icons.Filled.ExpandLess,
                         contentDescription = if (expanded) "Collapse" else "Expand",
-                        modifier = Modifier.rotate(rotation) // Apply rotation
+                        modifier = Modifier.rotate(rotation)
                     )
                 }
             }
-            // Use AnimatedVisibility for smooth expand/collapse animations
-            AnimatedVisibility(visible = expanded) {
-                Column {
-                    Spacer(modifier = Modifier.height(8.dp))
 
-                    if (isEditing) {
-                        // Editable content with a TextField
-                        TextField(
-                            value = editableContent,
-                            onValueChange = { editableContent = it },
-                            modifier = Modifier.fillMaxWidth(),
-                            placeholder = { Text("Edit content") }
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                    } else {
-                        // Display content as text
-                        HorizontalDivider(
-                            modifier = Modifier.fillMaxWidth(),
-                            color = MaterialTheme.colorScheme.onSurface,
-                            thickness = 1.dp
-                        )
-                        Text(
-                            modifier = Modifier.padding(top = 10.dp),
-                            text = item.content ?: "",
-                            fontSize = 16.sp
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                    }
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        // Delete icon on the bottom left
-                        IconButton(onClick = onDelete) {
-                            Icon(
-                                modifier = Modifier.size(20.dp),
-                                painter = painterResource(id = R.drawable.delete_icon),
-                                contentDescription = "Delete"
-                            )
-                        }
-
-                        // Edit or Save icon on the bottom right
-                        IconButton(onClick = {
-                            if (isEditing) {
-                                // Save changes
-                                val updatedItem = item.copy(content = editableContent)
-                                onUpdate(updatedItem)
-                                isEditing = false // Exit editing mode
-                            } else {
-                                // Enter editing mode
-                                isEditing = true
-                            }
-                        }) {
-                            Icon(
-                                imageVector = if (isEditing) Icons.Default.Save else Icons.Default.Edit,
-                                contentDescription = if (isEditing) "Save" else "Edit"
-                            )
-                        }
-                    }
-                }
-            }
         }
     }
 }
+
 
 
 @Composable

@@ -16,15 +16,21 @@ class ToDoViewModel: ViewModel() {
 
     val toDoList: LiveData<List<ToDo>> = toDoDao.getAllToDo()
 
-    fun addToDo(title: String) {
+    fun addToDo(title: String, content: String = "") {
         viewModelScope.launch(Dispatchers.IO){
-            toDoDao.addTodo(ToDo(title = title, createdAt = Date.from(Instant.now())))
+            toDoDao.addTodo(ToDo(title = title, content = content, createdAt = Date.from(Instant.now())))
         }
     }
 
     fun deleteToDo(id: Int){
         viewModelScope.launch(Dispatchers.IO){
             toDoDao.deleteTodo(id = id)
+        }
+    }
+
+    fun updateToDo(todo: ToDo){
+        viewModelScope.launch(Dispatchers.IO){
+            toDoDao.updateTodo(todo.id, todo.title, todo.content)
         }
     }
 }
