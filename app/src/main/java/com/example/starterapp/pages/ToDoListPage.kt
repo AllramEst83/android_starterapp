@@ -68,7 +68,7 @@ fun ToDoListPage(
                 topBar = {
                     Column {
                         TopAppBar(
-                            title = { Text(text = "To-Do List") },
+                            title = { Text(text = "Notes") },
                             navigationIcon = {
                                 IconButton(onClick = {
                                     scope.launch { drawerState.open() }
@@ -212,7 +212,7 @@ fun Content(viewModel: ToDoViewModel) {
                         .padding(4.dp),
                     value = inputText,
                     onValueChange = { inputText = it },
-                    label = { Text("Add todo") },
+                    label = { Text("Add note") },
                     shape = RoundedCornerShape(15.dp),
                 )
                 Button(
@@ -275,11 +275,11 @@ fun ToDoItemVersion2(
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
                                     shape = CircleShape
                                 )
-                                .padding(horizontal = 6.dp, vertical = 1.dp),
+                                .padding(horizontal = 8.dp, vertical = 1.dp),
                             text = formattedDate,
                             fontSize = 11.sp
                         )
-                        Spacer(modifier = Modifier.height(4.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
 
                         if (isEditing) {
                             // Edit tile with a TextField
@@ -294,7 +294,7 @@ fun ToDoItemVersion2(
                             // Title text
                             Text(
                                 text = item.title,
-                                fontSize = 18.sp,
+                                fontSize = 22.sp,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(start = 8.dp),
@@ -345,7 +345,8 @@ fun ToDoItemVersion2(
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Delete,
-                                        contentDescription = "Delete"
+                                        contentDescription = "Delete",
+                                        modifier = Modifier.size(22.dp)
                                     )
                                 }
 
@@ -369,7 +370,8 @@ fun ToDoItemVersion2(
                                 ) {
                                     Icon(
                                         imageVector = if (isEditing) Icons.Default.Save else Icons.Default.Edit,
-                                        contentDescription = if (isEditing) "Save" else "Edit"
+                                        contentDescription = if (isEditing) "Save" else "Edit",
+                                        modifier = Modifier.size(22.dp)
                                     )
                                 }
                             }
@@ -395,7 +397,9 @@ fun ToDoItemVersion2(
                     Icon(
                         imageVector = Icons.Filled.ExpandLess,
                         contentDescription = if (expanded) "Collapse" else "Expand",
-                        modifier = Modifier.rotate(rotation)
+                        modifier = Modifier
+                            .size(22.dp)
+                            .rotate(rotation)
                     )
                 }
             }
