@@ -239,7 +239,8 @@ fun ToDoItem(
 ) {
     val formattedDate = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH).format(item.createdAt)
     var isEditing by remember { mutableStateOf(false) }
-    var editableToDo by remember { mutableStateOf(item) }
+    var title by remember { mutableStateOf(item.title) }
+    var content by remember { mutableStateOf(item.content ?: "") }
     var expanded by remember { mutableStateOf(false) }
     val rotation by animateFloatAsState(
         targetValue = if (expanded) 0f else 180f,
@@ -250,7 +251,7 @@ fun ToDoItem(
         modifier = modifier,
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
-        Box { // Use a Box here to allow TopEnd alignment for IconButton
+        Box {
             Column(
                 modifier = Modifier
                     .animateContentSize(
@@ -265,7 +266,7 @@ fun ToDoItem(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(
-                        modifier = Modifier.weight(1f) // Takes up available space in Row
+                        modifier = Modifier.weight(1f)
                     ) {
                         // Date
                         Text(
@@ -283,8 +284,8 @@ fun ToDoItem(
                         if (isEditing) {
                             // Edit tile with a TextField
                             TextField(
-                                value = editableToDo.title,
-                                onValueChange = { editableToDo = editableToDo.copy(title = it) },
+                                value = title,
+                                onValueChange = { title = it },
                                 modifier = Modifier.fillMaxWidth(),
                                 placeholder = { Text("Edit title") }
                             )
@@ -306,8 +307,8 @@ fun ToDoItem(
                             if (isEditing) {
                                 // Editable content with a TextField
                                 TextField(
-                                    value = editableToDo.content ?: "",
-                                    onValueChange = { editableToDo = editableToDo.copy(content = it) },
+                                    value = content ?: "",
+                                    onValueChange = { content = it },
                                     modifier = Modifier.fillMaxWidth(),
                                     placeholder = { Text("Edit content") }
                                 )
@@ -337,7 +338,7 @@ fun ToDoItem(
                                     onClick = onDelete,
                                     modifier = Modifier
                                         .background(
-                                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f), // Slightly darker background
+                                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
                                             shape = CircleShape
                                         )
                                         .padding(2.dp)
@@ -353,7 +354,7 @@ fun ToDoItem(
                                 IconButton(
                                     onClick = {
                                         if (isEditing) {
-                                            val updatedItem = item.copy(title = editableToDo.title, content = editableToDo.content)
+                                            val updatedItem = item.copy(title = title, content = content)
                                             onUpdate(updatedItem)
                                             isEditing = false
                                         } else {
