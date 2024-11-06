@@ -36,6 +36,7 @@ import java.util.Locale
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.ui.draw.rotate
+import com.example.starterapp.components.ToDoItemComposable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -181,7 +182,7 @@ fun Content(viewModel: ToDoViewModel) {
                             .padding(1.dp)
                     ) {
                         itemsIndexed(toDoList) { _, item ->
-                            ToDoItem(item,
+                            ToDoItemComposable(item,
                                 onDelete = {
                                 viewModel.deleteToDo(item.id)
                                 },
@@ -239,14 +240,13 @@ fun ToDoItem(
 ) {
     val formattedDate = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH).format(item.createdAt)
     var isEditing by remember { mutableStateOf(false) }
-    var title by remember { mutableStateOf(item.title) }
-    var content by remember { mutableStateOf(item.content ?: "") }
+    var title by remember(item.id) { mutableStateOf(item.title) }
+    var content by remember(item.id) { mutableStateOf(item.content ?: "") }
     var expanded by remember { mutableStateOf(false) }
     val rotation by animateFloatAsState(
         targetValue = if (expanded) 0f else 180f,
         label = "ExpandCollapseRotation"
     )
-
     Card(
         modifier = modifier,
         elevation = CardDefaults.cardElevation(8.dp)
