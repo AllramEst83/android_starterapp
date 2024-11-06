@@ -2,7 +2,9 @@ package com.example.starterapp.pages
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -233,12 +235,11 @@ fun Content(viewModel: ToDoViewModel) {
 fun ToDoItem(item: ToDo, onDelete: () -> Unit, onUpdate: (ToDo) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     var isEditing by remember { mutableStateOf(false) }
-    var editableContent by remember { mutableStateOf(item.content ?: "") }
-    var editableTitle by remember { mutableStateOf(item.title ?: "") }
+    var editableToDo by remember { mutableStateOf(item) }
     val formattedDate = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH).format(item.createdAt)
 
     val rotation by animateFloatAsState(
-        targetValue = if (expanded) 180f else 0f,
+        targetValue = if (expanded) 0f else 180f,
         label = "ExpandCollapseRotation"
     )
 
@@ -246,7 +247,12 @@ fun ToDoItem(item: ToDo, onDelete: () -> Unit, onUpdate: (ToDo) -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .animateContentSize(),
+            .animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioNoBouncy,
+                    stiffness = Spring.StiffnessMedium
+                )
+            ),
         shape = RoundedCornerShape(15.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
@@ -270,8 +276,8 @@ fun ToDoItem(item: ToDo, onDelete: () -> Unit, onUpdate: (ToDo) -> Unit) {
 
                 if (isEditing) {
                     TextField(
-                        value = editableTitle,
-                        onValueChange = { editableTitle = it },
+                        value = editableToDo.title,
+                        onValueChange = { editableToDo = editableToDo.copy(title = it) },
                         modifier = Modifier.fillMaxWidth(), // Ensuring TextField takes full width
                         placeholder = { Text("Edit title") }
                     )
@@ -293,8 +299,8 @@ fun ToDoItem(item: ToDo, onDelete: () -> Unit, onUpdate: (ToDo) -> Unit) {
                         if (isEditing) {
                             // Editable content with a TextField
                             TextField(
-                                value = editableContent,
-                                onValueChange = { editableContent = it },
+                                value = editableToDo.content ?: "",
+                                onValueChange = { editableToDo = editableToDo.copy(content = it) },
                                 modifier = Modifier.fillMaxWidth(),
                                 placeholder = { Text("Edit content") }
                             )
@@ -333,7 +339,7 @@ fun ToDoItem(item: ToDo, onDelete: () -> Unit, onUpdate: (ToDo) -> Unit) {
                             IconButton(
                                 onClick = {
                                     if (isEditing) {
-                                        val updatedItem = item.copy(title = editableTitle, content = editableContent)
+                                        val updatedItem = item.copy(title = editableToDo.title, content = editableToDo.content)
                                         onUpdate(updatedItem)
                                         isEditing = false
                                     } else {
@@ -379,19 +385,6 @@ fun ToDoItem(item: ToDo, onDelete: () -> Unit, onUpdate: (ToDo) -> Unit) {
                     )
                 }
             }
-
         }
     }
-}
-
-
-
-@Composable
-fun ShowEmptyMessage() {
-    Text(
-        modifier = Modifier.fillMaxWidth(),
-        textAlign = TextAlign.Center,
-        text = "Oops! no items here.",
-        fontSize = 16.sp
-    )
 }
