@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import com.example.starterapp.db.todo.ToDo
 import java.text.SimpleDateFormat
@@ -33,12 +34,14 @@ fun ToDoItemComposable(
     item: ToDo,
     onDelete: () -> Unit,
     onUpdate: (ToDo) -> Unit,
+    onDoneUpdate: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val formattedDate = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH).format(item.createdAt)
     var isEditing by remember { mutableStateOf(false) }
     var title by remember(item.id) { mutableStateOf(item.title) }
     var content by remember(item.id) { mutableStateOf(item.content ?: "") }
+    var isChecked by remember(item.id) { mutableStateOf(item.done) }
     var expanded by remember { mutableStateOf(false) }
     val rotation by animateFloatAsState(
         targetValue = if (expanded) 0f else 180f,
@@ -66,26 +69,48 @@ fun ToDoItemComposable(
                     Column(
                         modifier = Modifier.weight(1f)
                     ) {
-                        // Date
-                        DisplayDate(
-                            modifier = Modifier
-                            .background(
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
-                                shape = CircleShape
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RoundCheckbox(
+                                isChecked = isChecked,
+                                onCheckedChange = { newCheckedState ->
+                                    isChecked = newCheckedState
+                                    onDoneUpdate(isChecked)
+                                },
+                                modifier = Modifier
+
+
                             )
-                            .padding(horizontal = 8.dp, vertical = 1.dp),
-                            formattedDate)
+                            DisplayDate(
+                                modifier = Modifier
+                                    .background(
+                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+                                        shape = CircleShape
+                                    )
+                                    .padding(horizontal = 8.dp, vertical = 1.dp)
+                                    .alpha(if (isChecked) 0.5f else 1f),
+                                formattedDate = formattedDate,
+                                isChecked = isChecked
+                            )
+                        }
 
                         Spacer(modifier = Modifier.height(8.dp))
 
                         EditableTitleField(
-                            editModifier = Modifier.fillMaxWidth(),
+                            editModifier = Modifier.fillMaxWidth()
+
+                                .alpha(if (isChecked) 0.5f else 1f),
                             textModifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 8.dp),
+                                .padding(start = 8.dp)
+
+                                .alpha(if (isChecked) 0.5f else 1f),
                             title = title,
                             onTitleChange = { title = it },
-                            isEditing = isEditing
+                            isEditing = isEditing,
+                            isChecked = isChecked
 
                         )
 
@@ -94,13 +119,16 @@ fun ToDoItemComposable(
                             Spacer(modifier = Modifier.height(4.dp))
 
                             EditableContentField(
-                                editModifier = Modifier.fillMaxWidth(),
+                                editModifier = Modifier.fillMaxWidth()
+                                    .alpha(if (isChecked) 0.5f else 1f),
                                 textModifier = Modifier
+                                    .alpha(if (isChecked) 0.5f else 1f)
                                     .fillMaxWidth()
                                     .padding(start = 8.dp),
                                 content = content,
                                 onContentChange = { content = it },
-                                isEditing = isEditing
+                                isEditing = isEditing,
+                                isChecked = isChecked
                             )
 
                             // Button row
@@ -109,7 +137,7 @@ fun ToDoItemComposable(
                                 onDeleteClick = onDelete,
                                 onEditClick = {
                                     if (isEditing) {
-                                        val updatedItem = item.copy(title = title, content = content)
+                                        val updatedItem = item.copy(title = title, content = content,done = isChecked)
                                         onUpdate(updatedItem)
                                         isEditing = false
                                     } else {
@@ -119,6 +147,7 @@ fun ToDoItemComposable(
                                 rowModifier = Modifier
                                     .fillMaxWidth()
                                     .padding(top = 8.dp)
+                                    .alpha(if (isChecked) 0.5f else 1f)
                             )
                         }
                     }
@@ -135,6 +164,7 @@ fun ToDoItemComposable(
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
                         shape = CircleShape)
                     .padding(4.dp)
+                    .alpha(if (isChecked) 0.5f else 1f)
             )
         }
     }

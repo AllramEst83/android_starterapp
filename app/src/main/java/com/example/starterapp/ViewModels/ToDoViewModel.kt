@@ -18,7 +18,13 @@ class ToDoViewModel: ViewModel() {
 
     fun addToDo(title: String, content: String = "") {
         viewModelScope.launch(Dispatchers.IO){
-            toDoDao.addTodo(ToDo(title = title, content = content, createdAt = Date.from(Instant.now())))
+            toDoDao.addTodo(
+                ToDo(
+                    title = title,
+                    content = content,
+                    createdAt = Date.from(Instant.now()),
+                    done = false)
+            )
         }
     }
 
@@ -32,6 +38,13 @@ class ToDoViewModel: ViewModel() {
         viewModelScope.launch(Dispatchers.IO){
             toDoDao.updateTodo(todo.id, todo.title, todo.content)
         }
+    }
+
+    fun updateToDoDone(id: Int, done: Boolean){
+        viewModelScope.launch(Dispatchers.IO){
+            toDoDao.updateTodoDone(id, done)
+        }
+
     }
 }
 

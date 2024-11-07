@@ -1,7 +1,13 @@
 package com.example.starterapp.utils
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.luminance
+
+// Extension function to blend a color with another color
+fun Color.blendWith(otherColor: Color, blendFactor: Float): Color {
+    return lerp(this, otherColor, blendFactor)
+}
 
 fun Color.contrastColor(): Color {
     return if (this.luminance() > 0.5f) Color.Black else Color.White

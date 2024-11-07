@@ -10,5 +10,6 @@ data class ToDo(
     var id: Int = 0,
     var title: String,
     var content: String? = null,
-    var createdAt: Date
+    var createdAt: Date,
+    var done: Boolean
 )

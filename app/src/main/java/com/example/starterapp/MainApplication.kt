@@ -15,7 +15,7 @@ class MainApplication : Application() {
             applicationContext,
             ToDoDatabase::class.java,
             ToDoDatabase.NAME
-        ).addMigrations(ToDoDatabase.MIGRATION_1_2)
+        ).addMigrations(ToDoDatabase.MIGRATION_1_2, ToDoDatabase.MIGRATION_2_3)
             .build()
     }
 }

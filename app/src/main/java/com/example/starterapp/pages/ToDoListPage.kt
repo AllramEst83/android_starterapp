@@ -182,12 +182,16 @@ fun Content(viewModel: ToDoViewModel) {
                             .padding(1.dp)
                     ) {
                         itemsIndexed(toDoList) { _, item ->
-                            ToDoItemComposable(item,
+                            ToDoItemComposable(
+                                item,
                                 onDelete = {
                                 viewModel.deleteToDo(item.id)
                                 },
                                 onUpdate = { updatedItem ->
                                     viewModel.updateToDo(updatedItem)
+                                },
+                                onDoneUpdate = { updatedDone ->
+                                    viewModel.updateToDoDone(item.id, updatedDone)
                                 },
                                 Modifier.padding(10.dp)
                             )
@@ -247,6 +251,7 @@ fun ToDoItem(
         targetValue = if (expanded) 0f else 180f,
         label = "ExpandCollapseRotation"
     )
+
     Card(
         modifier = modifier,
         elevation = CardDefaults.cardElevation(8.dp)
@@ -307,7 +312,7 @@ fun ToDoItem(
                             if (isEditing) {
                                 // Editable content with a TextField
                                 TextField(
-                                    value = content ?: "",
+                                    value = content,
                                     onValueChange = { content = it },
                                     modifier = Modifier.fillMaxWidth(),
                                     placeholder = { Text("Edit content") }
