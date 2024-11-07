@@ -10,7 +10,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.starterapp"
+        applicationId = "com.codedbykay.purenotes"
         minSdk = 30
         targetSdk = 34
         versionCode = 1

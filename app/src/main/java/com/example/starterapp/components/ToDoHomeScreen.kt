@@ -16,12 +16,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import com.example.starterapp.R
+import androidx.compose.ui.res.stringResource
 import com.example.starterapp.pages.ToDoPage
 import com.example.starterapp.ui.theme.ToDoAppTheme
 import com.example.starterapp.viewModels.ThemeViewModel
 import com.example.starterapp.viewModels.ToDoViewModel
 import kotlinx.coroutines.launch
+import com.example.starterapp.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,7 +54,7 @@ fun ToDoHomeScreen(
                 topBar = {
                     Column {
                         TopAppBar(
-                            title = { Text(text = "Notes") },
+                            title = { Text(text = stringResource(R.string.app_name)) },
                             navigationIcon = {
                                 IconButton(onClick = {
                                     scope.launch { drawerState.open() }

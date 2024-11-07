@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Starter app</string>
-    <string name="todo_page_name">To-Do List</string>
+    <string name="app_name">Pure notes</string>
+    <string name="todo_page_name">Pure notes</string>
     <string name="system_default_light">System Default Light</string>
     <string name="system_default_dark">System Default Dark</string>
     <string name="red_light_theme">Red Light Theme</string>
