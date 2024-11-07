@@ -1,6 +1,5 @@
 package com.example.starterapp
 
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,8 +12,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.starterapp.components.ToDoHomeScreen
 import com.example.starterapp.pages.ThemeSettingsScreen
-import com.example.starterapp.pages.ToDoListPage
 import com.example.starterapp.ui.theme.ToDoAppTheme
 import com.example.starterapp.viewModels.ThemeViewModel
 import com.example.starterapp.viewModels.ToDoViewModel
@@ -38,8 +37,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     NavHost(navController = navController, startDestination = "todo_list") {
                         composable(route = "todo_list") {
-                            ToDoListPage(
-                                viewModel = toDoViewModel,
+                            ToDoHomeScreen(
+                                toDoViewModel = toDoViewModel,
                                 themeViewModel = themeViewModel,
                                 onNavigateToSettings = {
                                     navController.navigate("theme_settings")
@@ -60,8 +59,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.insetsController?.setSystemBarsAppearance(0, 0)
-        }
     }
 }

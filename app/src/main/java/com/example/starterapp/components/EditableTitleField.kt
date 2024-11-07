@@ -18,7 +18,7 @@ fun EditableTitleField(
     onTitleChange: (String) -> Unit,
     isEditing: Boolean,
     isChecked: Boolean
-){
+) {
     if (isEditing) {
         // Edit tile with a TextField
         TextField(

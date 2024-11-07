@@ -12,7 +12,8 @@ fun DisplayDate(
     modifier: Modifier = Modifier,
     formattedDate: String,
     fontSize: TextUnit = 11.sp,
-    isChecked: Boolean){
+    isChecked: Boolean
+) {
     Text(
         modifier = modifier,
         text = formattedDate,

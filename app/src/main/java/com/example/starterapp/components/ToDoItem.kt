@@ -99,7 +99,8 @@ fun ToDoItemComposable(
                         Spacer(modifier = Modifier.height(8.dp))
 
                         EditableTitleField(
-                            editModifier = Modifier.fillMaxWidth()
+                            editModifier = Modifier
+                                .fillMaxWidth()
 
                                 .alpha(if (isChecked) 0.5f else 1f),
                             textModifier = Modifier
@@ -119,7 +120,8 @@ fun ToDoItemComposable(
                             Spacer(modifier = Modifier.height(4.dp))
 
                             EditableContentField(
-                                editModifier = Modifier.fillMaxWidth()
+                                editModifier = Modifier
+                                    .fillMaxWidth()
                                     .alpha(if (isChecked) 0.5f else 1f),
                                 textModifier = Modifier
                                     .alpha(if (isChecked) 0.5f else 1f)
@@ -137,7 +139,11 @@ fun ToDoItemComposable(
                                 onDeleteClick = onDelete,
                                 onEditClick = {
                                     if (isEditing) {
-                                        val updatedItem = item.copy(title = title, content = content,done = isChecked)
+                                        val updatedItem = item.copy(
+                                            title = title,
+                                            content = content,
+                                            done = isChecked
+                                        )
                                         onUpdate(updatedItem)
                                         isEditing = false
                                     } else {
@@ -162,7 +168,8 @@ fun ToDoItemComposable(
                 boxModifier = Modifier
                     .background(
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
-                        shape = CircleShape)
+                        shape = CircleShape
+                    )
                     .padding(4.dp)
                     .alpha(if (isChecked) 0.5f else 1f)
             )

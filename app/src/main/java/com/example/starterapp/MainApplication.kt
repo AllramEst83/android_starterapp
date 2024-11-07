@@ -5,7 +5,7 @@ import androidx.room.Room
 import com.example.starterapp.db.todo.ToDoDatabase
 
 class MainApplication : Application() {
-    companion object{
+    companion object {
         lateinit var toDoDatabase: ToDoDatabase
     }
 

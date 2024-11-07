@@ -11,14 +11,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
- fun EditableContentField(
+fun EditableContentField(
     editModifier: Modifier = Modifier,
     textModifier: Modifier = Modifier,
     content: String,
     onContentChange: (String) -> Unit,
     isEditing: Boolean,
     isChecked: Boolean
- ){
+) {
     if (isEditing) {
         // Editable content with a TextField
         TextField(
@@ -39,4 +39,4 @@ import androidx.compose.ui.unit.sp
         )
         Spacer(modifier = Modifier.height(8.dp))
     }
- }
+}

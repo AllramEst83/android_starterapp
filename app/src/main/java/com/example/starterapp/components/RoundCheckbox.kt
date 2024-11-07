@@ -26,13 +26,22 @@ fun RoundCheckbox(
     // Detecting current theme for contrast adjustment
     val backgroundColor = if (isChecked) {
         if (!isSystemInDarkTheme()) {
-            MaterialTheme.colorScheme.primary.blendWith(Color.Green, 0.35f) // Lighter green in light mode
+            MaterialTheme.colorScheme.primary.blendWith(
+                Color.Green,
+                0.35f
+            ) // Lighter green in light mode
         } else {
-            MaterialTheme.colorScheme.primary.blendWith(Color.DarkGray, 0.5f) // Darker greenish-gray in dark mode
+            MaterialTheme.colorScheme.primary.blendWith(
+                Color.DarkGray,
+                0.5f
+            ) // Darker greenish-gray in dark mode
         }
     } else {
         if (!isSystemInDarkTheme()) {
-            MaterialTheme.colorScheme.surfaceVariant.blendWith(Color.LightGray, 0.7f) // Dimmed for unchecked in light mode
+            MaterialTheme.colorScheme.surfaceVariant.blendWith(
+                Color.LightGray,
+                0.7f
+            ) // Dimmed for unchecked in light mode
         } else {
             MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f) // Darker dimmed for unchecked in dark mode
         }

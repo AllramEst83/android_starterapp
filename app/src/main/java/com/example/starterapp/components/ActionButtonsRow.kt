@@ -3,7 +3,6 @@ package com.example.starterapp.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -24,11 +23,11 @@ fun ActionButtonsRow(
     onDeleteClick: () -> Unit,
     onEditClick: () -> Unit,
     rowModifier: Modifier = Modifier
-){
-    Row (
+) {
+    Row(
         modifier = rowModifier,
         horizontalArrangement = Arrangement.SpaceBetween
-    ){
+    ) {
         // Delete button
         IconButton(
             onClick = onDeleteClick,
