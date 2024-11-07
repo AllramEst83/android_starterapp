@@ -1,19 +1,12 @@
 package com.example.starterapp.pages
 
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -24,19 +17,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.starterapp.R
-import com.example.starterapp.db.todo.ToDo
+import com.example.starterapp.components.ToDoItemComposable
 import com.example.starterapp.ui.theme.ToDoAppTheme
 import com.example.starterapp.utils.blendWithWhite
 import com.example.starterapp.utils.contrastColor
 import com.example.starterapp.viewModels.ThemeViewModel
 import com.example.starterapp.viewModels.ToDoViewModel
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Locale
-import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.Save
-import androidx.compose.ui.draw.rotate
-import com.example.starterapp.components.ToDoItemComposable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -229,183 +216,6 @@ fun Content(viewModel: ToDoViewModel) {
                     enabled = inputText.isNotEmpty()
                 ) {
                     Text("Add")
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun ToDoItem(
-    item: ToDo,
-    onDelete: () -> Unit,
-    onUpdate: (ToDo) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val formattedDate = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH).format(item.createdAt)
-    var isEditing by remember { mutableStateOf(false) }
-    var title by remember(item.id) { mutableStateOf(item.title) }
-    var content by remember(item.id) { mutableStateOf(item.content ?: "") }
-    var expanded by remember { mutableStateOf(false) }
-    val rotation by animateFloatAsState(
-        targetValue = if (expanded) 0f else 180f,
-        label = "ExpandCollapseRotation"
-    )
-
-    Card(
-        modifier = modifier,
-        elevation = CardDefaults.cardElevation(8.dp)
-    ) {
-        Box {
-            Column(
-                modifier = Modifier
-                    .animateContentSize(
-                        animationSpec = spring(
-                            dampingRatio = Spring.DampingRatioNoBouncy,
-                            stiffness = Spring.StiffnessMedium
-                        )
-                    )
-                    .padding(10.dp)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        // Date
-                        Text(
-                            modifier = Modifier
-                                .background(
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
-                                    shape = CircleShape
-                                )
-                                .padding(horizontal = 8.dp, vertical = 1.dp),
-                            text = formattedDate,
-                            fontSize = 11.sp
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        if (isEditing) {
-                            // Edit tile with a TextField
-                            TextField(
-                                value = title,
-                                onValueChange = { title = it },
-                                modifier = Modifier.fillMaxWidth(),
-                                placeholder = { Text("Edit title") }
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                        } else {
-                            // Title text
-                            Text(
-                                text = item.title,
-                                fontSize = 22.sp,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(start = 8.dp),
-                            )
-                        }
-                        if (expanded) {
-
-                            Spacer(modifier = Modifier.height(4.dp))
-
-                            if (isEditing) {
-                                // Editable content with a TextField
-                                TextField(
-                                    value = content,
-                                    onValueChange = { content = it },
-                                    modifier = Modifier.fillMaxWidth(),
-                                    placeholder = { Text("Edit content") }
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
-                            } else {
-                                Spacer(modifier = Modifier.height(4.dp))
-                                // Content text
-                                Text(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(start = 8.dp),
-                                    text = item.content ?: "",
-                                    fontSize = 16.sp
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
-                            }
-
-                            // Button row
-                            Row (
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 8.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ){
-                                // Delete button
-                                IconButton(
-                                    onClick = onDelete,
-                                    modifier = Modifier
-                                        .background(
-                                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
-                                            shape = CircleShape
-                                        )
-                                        .padding(2.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Delete,
-                                        contentDescription = "Delete",
-                                        modifier = Modifier.size(22.dp)
-                                    )
-                                }
-
-                                // Edit button
-                                IconButton(
-                                    onClick = {
-                                        if (isEditing) {
-                                            val updatedItem = item.copy(title = title, content = content)
-                                            onUpdate(updatedItem)
-                                            isEditing = false
-                                        } else {
-                                            isEditing = true
-                                        }
-                                    },
-                                    modifier = Modifier
-                                        .background(
-                                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f), // Slightly darker background
-                                            shape = CircleShape
-                                        )
-                                        .padding(2.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = if (isEditing) Icons.Default.Save else Icons.Default.Edit,
-                                        contentDescription = if (isEditing) "Save" else "Edit",
-                                        modifier = Modifier.size(22.dp)
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Chevron icon to expand/collapse
-            IconButton(
-                onClick = { if (!isEditing) expanded = !expanded },
-                enabled = !isEditing,
-                modifier = Modifier.align(Alignment.TopEnd)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
-                            shape = CircleShape
-                        )
-                        .padding(4.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.ExpandLess,
-                        contentDescription = if (expanded) "Collapse" else "Expand",
-                        modifier = Modifier
-                            .size(22.dp)
-                            .rotate(rotation)
-                    )
                 }
             }
         }
