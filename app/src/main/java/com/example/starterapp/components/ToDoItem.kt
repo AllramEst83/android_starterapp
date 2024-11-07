@@ -50,7 +50,8 @@ fun ToDoItemComposable(
 
     Card(
         modifier = modifier,
-        elevation = CardDefaults.cardElevation(8.dp)
+        elevation = CardDefaults.cardElevation(8.dp),
+        shape = MaterialTheme.shapes.small
     ) {
         Box {
             Column(

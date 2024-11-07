@@ -24,7 +24,7 @@ fun ToDoPage(toDoViewModel: ToDoViewModel) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(1.dp),
-            verticalArrangement = Arrangement.SpaceBetween // Add this line
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             Box(
                 modifier = Modifier
