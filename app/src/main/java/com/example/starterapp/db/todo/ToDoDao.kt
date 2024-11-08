@@ -3,14 +3,25 @@ package com.example.starterapp.db.todo
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
 interface ToDoDao {
-    @Query("SELECT * FROM ToDo ORDER BY createdAt DESC")
-    fun getAllToDo(): LiveData<List<ToDo>>
+    // Title sorting queries
+    @Query("SELECT * FROM ToDo ORDER BY title ASC")
+    fun getAllToDoTitleAsc(): LiveData<List<ToDo>>
 
-    @Insert
+    @Query("SELECT * FROM ToDo ORDER BY title DESC")
+    fun getAllToDoTitleDesc(): LiveData<List<ToDo>>
+
+    @Query("SELECT * FROM ToDo ORDER BY createdAt DESC")
+    fun getAllToDoDesc(): LiveData<List<ToDo>>
+
+    @Query("SELECT * FROM ToDo ORDER BY createdAt ASC")
+    fun getAllToDoAsc(): LiveData<List<ToDo>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addTodo(todo: ToDo)
 
     @Query("DELETE FROM ToDo WHERE id = :id")
