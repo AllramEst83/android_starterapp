@@ -28,7 +28,7 @@ fun ToDoPage(toDoViewModel: ToDoViewModel) {
         ) {
             Box(
                 modifier = Modifier
-                    .weight(1f, fill = true) // Add weight to push the input Row to the bottom
+                    .weight(1f, fill = true)
                     .fillMaxWidth()
             ) {
                 ToDoList(

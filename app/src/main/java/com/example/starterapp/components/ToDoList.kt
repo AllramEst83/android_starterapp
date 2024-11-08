@@ -45,10 +45,8 @@ fun ToDoList(
                         item = item,
                         onDelete = { toDoViewModel.deleteToDo(item.id) },
                         onUpdate = { updatedItem -> toDoViewModel.updateToDo(updatedItem) },
-                        onDoneUpdate = { updatedDone ->
-                            toDoViewModel.updateToDoDone(item.id, updatedDone)
-                        },
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
+                        onDoneUpdate = { updatedDone -> toDoViewModel.updateToDoDone(item.id, updatedDone) },
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 7.dp)
                     )
                 }
             }
@@ -60,7 +58,7 @@ fun ToDoList(
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 10.dp),
+                            .padding(start = 10.dp, end = 10.dp, top = 15.dp, bottom = 10.dp),
                         shape = MaterialTheme.shapes.small,
                         color = MaterialTheme.colorScheme.surfaceVariant
                             .copy(alpha = 0.8f)
@@ -109,7 +107,7 @@ fun ToDoList(
                         onDoneUpdate = { updatedDone ->
                             toDoViewModel.updateToDoDone(item.id, updatedDone)
                         },
-                        modifier = Modifier.padding(10.dp)
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 7.dp)
                     )
                 }
             }
