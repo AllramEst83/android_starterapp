@@ -82,9 +82,7 @@ fun ToDoList(
 
                             IconButton(
                                 onClick = {
-                                    completedItems.forEach { item ->
-                                        toDoViewModel.deleteToDo(item.id)
-                                    }
+                                    toDoViewModel.deleteAllToDo()
                                 }
                             ) {
                                 Icon(

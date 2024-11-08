@@ -20,6 +20,10 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Ensures BuildConfig.DEBUG is set to true in debug builds
+            isMinifyEnabled = false
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -36,6 +40,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
 }
@@ -70,7 +75,6 @@ dependencies {
 
     val roomversion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomversion")
-    annotationProcessor("androidx.room:room-compiler:$roomversion")
     ksp("androidx.room:room-compiler:$roomversion")
 
     val navversion = "2.8.3"

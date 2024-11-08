@@ -67,7 +67,7 @@ fun ToDoHomeScreen(
                             },
                             actions = {
                                 SortMenu(toDoViewModel)
-
+                                FilterMenu(toDoViewModel)
                             }
                         )
                         // Divider under TopAppBar spanning the entire width
